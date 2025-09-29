@@ -1,37 +1,40 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-
-
-//Obs: Voce é livre para implementar na linguagem de sua preferência, desde que respeite as funcionalidades e saídas existentes, além de aplicar os conceitos solicitados.
+using TransacaoFinanceira.Models;
+using TransacaoFinanceira.Services;
 
 namespace TransacaoFinanceira
 {
     class Program
     {
-
         static void Main(string[] args)
         {
-            var TRANSACOES = new[] { new {correlation_id= 1,datetime="09/09/2023 14:15:00", conta_origem= 938485762L, conta_destino= 2147483649L, VALOR= 150},
-                                     new {correlation_id= 2,datetime="09/09/2023 14:15:05", conta_origem= 2147483649L, conta_destino= 210385733L, VALOR= 149},
-                                     new {correlation_id= 3,datetime="09/09/2023 14:15:29", conta_origem= 347586970L, conta_destino= 238596054L, VALOR= 1100},
-                                     new {correlation_id= 4,datetime="09/09/2023 14:17:00", conta_origem= 675869708L, conta_destino= 210385733L, VALOR= 5300},
-                                     new {correlation_id= 5,datetime="09/09/2023 14:18:00", conta_origem= 238596054L, conta_destino= 674038564L, VALOR= 1489},
-                                     new {correlation_id= 6,datetime="09/09/2023 14:18:20", conta_origem= 573659065L, conta_destino= 563856300L, VALOR= 49},
-                                     new {correlation_id= 7,datetime="09/09/2023 14:19:00", conta_origem= 938485762L, conta_destino= 2147483649L, VALOR= 44},
-                                     new {correlation_id= 8,datetime="09/09/2023 14:19:01", conta_origem= 573659065L, conta_destino= 675869708L, VALOR= 150},
-
+            var transacoes = new[]
+            {
+                new { CorrelationId = 1, DateTime = DateTime.Parse("09/09/2023 14:15:00"), ContaOrigem = 938485762L, ContaDestino = 2147483649L, Valor = 150m },
+                new { CorrelationId = 2, DateTime = DateTime.Parse("09/09/2023 14:15:05"), ContaOrigem = 2147483649L, ContaDestino = 210385733L, Valor = 149m },
+                new { CorrelationId = 3, DateTime = DateTime.Parse("09/09/2023 14:15:29"), ContaOrigem = 347586970L, ContaDestino = 238596054L, Valor = 1100m },
+                new { CorrelationId = 4, DateTime = DateTime.Parse("09/09/2023 14:17:00"), ContaOrigem = 675869708L, ContaDestino = 210385733L, Valor = 5300m },
+                new { CorrelationId = 5, DateTime = DateTime.Parse("09/09/2023 14:18:00"), ContaOrigem = 238596054L, ContaDestino = 674038564L, Valor = 1489m },
+                new { CorrelationId = 6, DateTime = DateTime.Parse("09/09/2023 14:18:20"), ContaOrigem = 573659065L, ContaDestino = 563856300L, Valor = 49m },
+                new { CorrelationId = 7, DateTime = DateTime.Parse("09/09/2023 14:19:00"), ContaOrigem = 938485762L, ContaDestino = 2147483649L, Valor = 44m },
+                new { CorrelationId = 8, DateTime = DateTime.Parse("09/09/2023 14:19:01"), ContaOrigem = 573659065L, ContaDestino = 675869708L, Valor = 150m }
             };
 
-            Services.ExecutaTransacaoFinanceira executor = new Services.ExecutaTransacaoFinanceira();
-            // Usar SemaphoreSlim para controlar concorrência
-            var options = new ParallelOptions { MaxDegreeOfParallelism = 4 };
+            ITransacaoFinanceira executor = new TransacaoFinanceiraService();
 
-            Parallel.ForEach(TRANSACOES, item =>
+            // 🔹 Ordena pela data antes de executar
+            foreach (var item in transacoes.OrderBy(t => t.DateTime))
             {
-                executor.Transferir(item.correlation_id, item.conta_origem, item.conta_destino, item.VALOR);
-            });
+                executor.Transferir(item.CorrelationId, item.ContaOrigem, item.ContaDestino, item.Valor);
+            }
 
+            Console.WriteLine("\n--- Saldos finais ---");
+            foreach (var saldo in executor.ObterTodosSaldos())
+            {
+                Console.WriteLine($"Conta: {saldo.Conta}, Saldo: {saldo.Saldo}");
+            }
         }
     }
 }

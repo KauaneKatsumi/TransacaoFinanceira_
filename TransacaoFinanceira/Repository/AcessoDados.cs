@@ -1,62 +1,37 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using TransacaoFinanceira.Models;
 
-namespace TransacaoFinanceira.Repository
+namespace TransacaoFinanceira.Data
 {
     public class AcessoDados
     {
-         private List<ContasSaldo> TABELA_SALDOS;
-        private readonly object _lockObject = new object(); // Lock para concorrência
+        protected readonly List<ContaSaldo> tabelaSaldos;
 
         public AcessoDados()
         {
-            TABELA_SALDOS = new List<ContasSaldo>
+            tabelaSaldos = new List<ContaSaldo>
             {
-                new ContasSaldo(938485762, 180),
-                new ContasSaldo(347586970, 1200),
-                new ContasSaldo(2147483649, 0),
-                new ContasSaldo(675869708, 4900),
-                new ContasSaldo(238596054, 478),
-                new ContasSaldo(573659065, 787),
-                new ContasSaldo(210385733, 10),
-                new ContasSaldo(674038564, 400),
-                new ContasSaldo(563856300, 1200)
+                new ContaSaldo(938485762, 180),
+                new ContaSaldo(347586970, 1200),
+                new ContaSaldo(2147483649, 0),
+                new ContaSaldo(675869708, 4900),
+                new ContaSaldo(238596054, 478),
+                new ContaSaldo(573659065, 787),
+                new ContaSaldo(210385733, 10),
+                new ContaSaldo(674038564, 400),
+                new ContaSaldo(563856300, 1200)
             };
         }
 
-        public ContasSaldo GetSaldo(long id)
+        public ContaSaldo GetSaldo(long contaId)
         {
-            lock (_lockObject) //Thread-safe
-            {
-                return TABELA_SALDOS.Find(x => x.Conta == id);
-            }
+            return tabelaSaldos.FirstOrDefault(x => x.Conta == contaId);
         }
 
-        public bool Atualizar(ContasSaldo dado)
+        public IEnumerable<ContaSaldo> ObterTodosSaldos()
         {
-            lock (_lockObject) //Thread-safe
-            {
-                try
-                {
-                    var index = TABELA_SALDOS.FindIndex(x => x.Conta == dado.Conta);
-                    if (index >= 0)
-                    {
-                        TABELA_SALDOS[index] = dado;
-                    }
-                    else
-                    {
-                        TABELA_SALDOS.Add(dado);
-                    }
-                    return true;
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine($"Erro ao atualizar conta {dado.Conta}: {e.Message}");
-                    return false;
-                }
-            }
-        }  
+            return tabelaSaldos;
+        }
     }
 }

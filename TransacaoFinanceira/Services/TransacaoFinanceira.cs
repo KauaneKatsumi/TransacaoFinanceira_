@@ -9,8 +9,8 @@ namespace TransacaoFinanceira.Services
     {
         public void Transferir(int correlationId, long contaOrigem, long contaDestino, decimal valor)
         {
-            var origem = GetSaldo(contaOrigem);
-            var destino = GetSaldo(contaDestino);
+            ContaSaldo? origem = GetSaldo(contaOrigem);
+            ContaSaldo? destino = GetSaldo(contaDestino);
 
             if (origem == null || destino == null)
             {

@@ -24,7 +24,7 @@ namespace TransacaoFinanceira.Repository
             };
         }
 
-        public ContaSaldo GetSaldo(long contaId)
+        public ContaSaldo? GetSaldo(long contaId)
         {
             return tabelaSaldos.FirstOrDefault(x => x.Conta == contaId);
         }

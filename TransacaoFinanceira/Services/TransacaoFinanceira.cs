@@ -9,29 +9,30 @@ namespace TransacaoFinanceira.Services
     {
         public void Transferir(int correlationId, long contaOrigem, long contaDestino, decimal valor)
         {
-            var origem = GetSaldo(contaOrigem);
-            var destino = GetSaldo(contaDestino);
+            ContaSaldo? origem = GetSaldo(contaOrigem);
+            ContaSaldo? destino = GetSaldo(contaDestino);
 
             if (origem == null || destino == null)
             {
-                Console.WriteLine($"Transação {correlationId} inválida: conta inexistente.");
+                Console.WriteLine("Transação {0} inválida: conta inexistente.", correlationId);
                 return;
             }
 
             if (origem.Saldo < valor)
             {
-                Console.WriteLine($"Transação {correlationId} cancelada por falta de saldo.");
+                Console.WriteLine("Transação {0} foi cancelada por falta de saldo. " +
+                                  "Solicitacao de Transacao: {2} Saldo Atual: {1}", correlationId, origem.Saldo, valor);
                 return;
             }
 
             origem.Saldo -= valor;
             destino.Saldo += valor;
 
-            Console.WriteLine($"Transação {correlationId} concluída com sucesso! " +
-                              $"Saldo origem: {origem.Saldo} | Saldo destino: {destino.Saldo}");
+            Console.WriteLine(" Transação {0} foi efetivada com sucesso! " +
+                              "Novos saldos: Conta Origem:{1} Saldo:{3} | Conta Destino: {2} Saldo: {4}", correlationId, contaOrigem, contaDestino, origem.Saldo, destino.Saldo);
         }
 
-        public IEnumerable<ContaSaldo> ObterTodosSaldos()
+        public new IEnumerable<ContaSaldo> ObterTodosSaldos()
         {
             return base.ObterTodosSaldos();
         }

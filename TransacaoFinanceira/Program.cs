@@ -29,7 +29,7 @@ namespace TransacaoFinanceira
                 executor.Transferir(item.CorrelationId, item.ContaOrigem, item.ContaDestino, item.Valor);
             }
 
-            Console.WriteLine("\n--- Saldos finais ---");
+            Console.WriteLine("\n--- Resumo das Transacoes ---");
             foreach (var saldo in executor.ObterTodosSaldos())
             {
                 Console.WriteLine($"Conta: {saldo.Conta}, Saldo: {saldo.Saldo}");

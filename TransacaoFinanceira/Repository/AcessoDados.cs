@@ -6,11 +6,11 @@ namespace TransacaoFinanceira.Repository
 {
     public class AcessoDados
     {
-        protected readonly List<ContaSaldo> tabelaSaldos;
+        private readonly List<ContaSaldo> _tabelaSaldos;
 
         public AcessoDados()
         {
-            tabelaSaldos = new List<ContaSaldo>
+            _tabelaSaldos = new List<ContaSaldo>
             {
                 new ContaSaldo(938485762, 180),
                 new ContaSaldo(347586970, 1200),
@@ -24,14 +24,14 @@ namespace TransacaoFinanceira.Repository
             };
         }
 
-        public ContaSaldo GetSaldo(long contaId)
+        public ContaSaldo? GetSaldo(long contaId)
         {
-            return tabelaSaldos.FirstOrDefault(x => x.Conta == contaId);
+            return _tabelaSaldos.FirstOrDefault(x => x.Conta == contaId);
         }
 
         public IEnumerable<ContaSaldo> ObterTodosSaldos()
         {
-            return tabelaSaldos;
+            return _tabelaSaldos;
         }
     }
 }

@@ -24,7 +24,6 @@ namespace TransacaoFinanceira
 
             ITransacaoFinanceira executor = new TransacaoFinanceiraService();
 
-            // 🔹 Ordena pela data antes de executar
             foreach (var item in transacoes.OrderBy(t => t.DateTime))
             {
                 executor.Transferir(item.CorrelationId, item.ContaOrigem, item.ContaDestino, item.Valor);

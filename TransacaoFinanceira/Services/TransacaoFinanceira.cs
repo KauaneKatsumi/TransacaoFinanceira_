@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using TransacaoFinanceira.Data;
+using TransacaoFinanceira.Repository;
 using TransacaoFinanceira.Models;
 
 namespace TransacaoFinanceira.Services
